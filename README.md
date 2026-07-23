@@ -19,6 +19,21 @@ como assets del [Release `v1`](../../releases/tag/v1), con URLs de descarga del 
 https://github.com/cvenegas-sernageomin/informes-rmasa/releases/download/v1/RM-YYYY-NN.pdf
 ```
 
+## Catálogo (KMZ)
+
+`catalogo_rmasa.kmz` — 1.640 puntos (Atacama, Coquimbo, Valparaíso, Metropolitana).
+Cada `Placemark` trae en su `ExtendedData`:
+
+- `ENLACE`: mejor URL de descarga (Release de este repo si el informe ya está
+  disponible; si no, el portal original de SERNAGEOMIN).
+- `ENLACE_PORTAL`: URL original en `portalgeo.sernageomin.cl` (siempre presente,
+  como referencia).
+- `DISPONIBLE`: `1` si el PDF ya está re-hosteado en el Release (permite descarga
+  vía `fetch()+blob` sin problemas de CORS), `0` si aún apunta solo al portal.
+
+Se sirve sin caché desde `raw.githubusercontent.com` (rama `main`), consistente con
+el patrón usado por [`mapas-peligros-overlays`](https://github.com/cvenegas-sernageomin/mapas-peligros-overlays).
+
 ## Estado
 
 **Disponibles actualmente: 48 de 118** informes referenciados por el catálogo KMZ de
