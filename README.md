@@ -2,8 +2,7 @@
 
 Catálogo de informes técnicos (PDF) de Remociones en Masa (RMASA), re-hosteados desde
 `portalgeo.sernageomin.cl/Informes_PDF_Nac/` para servirlos con cabecera CORS habilitada
-(`Access-Control-Allow-Origin: *`, provista por GitHub) a la PWA
-[`remociones-en-masa`](https://github.com/cvenegas-sernageomin/catastro-remociones)
+a la PWA [`remociones-en-masa`](https://github.com/cvenegas-sernageomin/catastro-remociones)
 ("Ingreso de Remociones en Masa"), que descarga los PDFs vía `fetch()` + `blob` para
 funcionar correctamente en modo standalone en iOS.
 
@@ -12,24 +11,31 @@ directamente desde la PWA.
 
 ## Contenido
 
-Los PDFs no están en este repositorio git (para mantenerlo liviano). Están publicados
-como assets del [Release `v1`](../../releases/tag/v1), con URLs de descarga del tipo:
+Los PDFs están **commiteados en `pdfs/`** (no en un Release) y se sirven vía
+`raw.githubusercontent.com`, que sí manda `Access-Control-Allow-Origin: *`:
 
 ```
-https://github.com/cvenegas-sernageomin/informes-rmasa/releases/download/v1/RM-YYYY-NN.pdf
+https://raw.githubusercontent.com/cvenegas-sernageomin/informes-rmasa/main/pdfs/RM-YYYY-NN.pdf
 ```
+
+**Nota técnica importante:** se probó primero publicarlos como assets de un GitHub
+Release (para no engordar el repo git) — pero los Release assets **no llevan cabecera
+CORS** (están pensados para descarga por navegación directa, no para `fetch()`/XHR).
+El `fetch()` fallaba exactamente igual que contra el portal original. Por eso los PDFs
+volvieron a estar commiteados en el repo: es la única vía confirmada que sirve con CORS.
 
 ## Catálogo (KMZ)
 
 `catalogo_rmasa.kmz` — 1.640 puntos (Atacama, Coquimbo, Valparaíso, Metropolitana).
 Cada `Placemark` trae en su `ExtendedData`:
 
-- `ENLACE`: mejor URL de descarga (Release de este repo si el informe ya está
-  disponible; si no, el portal original de SERNAGEOMIN).
+- `ENLACE`: mejor URL de descarga (este repo si el informe ya está disponible; si no,
+  el portal original de SERNAGEOMIN).
 - `ENLACE_PORTAL`: URL original en `portalgeo.sernageomin.cl` (siempre presente,
   como referencia).
-- `DISPONIBLE`: `1` si el PDF ya está re-hosteado en el Release (permite descarga
-  vía `fetch()+blob` sin problemas de CORS), `0` si aún apunta solo al portal.
+- `DISPONIBLE`: `1` si el PDF ya está re-hosteado aquí (permite descarga vía
+  `fetch()+blob` sin problemas de CORS), `0` si aún apunta solo al portal (sin CORS,
+  la PWA lo ofrece como enlace simple `target="_blank"`, no vía fetch).
 
 Se sirve sin caché desde `raw.githubusercontent.com` (rama `main`), consistente con
 el patrón usado por [`mapas-peligros-overlays`](https://github.com/cvenegas-sernageomin/mapas-peligros-overlays).
@@ -37,6 +43,10 @@ el patrón usado por [`mapas-peligros-overlays`](https://github.com/cvenegas-ser
 ## Estado
 
 **Disponibles actualmente: 48 de 118** informes referenciados por el catálogo KMZ de
-1.640 puntos de remociones en masa (Atacama, Coquimbo, Valparaíso, Metropolitana).
-Los 70 informes restantes quedan pendientes de recopilar y publicar en una futura
-actualización del release.
+1.640 puntos de remociones en masa. Los 70 informes restantes quedan pendientes;
+60 son exclusivos de la región Metropolitana (sin cobertura por ahora) y 10
+corresponden a Valparaíso/Coquimbo (RM-2000-03, RM-2002-02, RM-2008-04, RM-2013-06,
+RM-2014-32, RM-2020-12, RM-2018-24, RM-2021-01, RM-2021-34, RM-2022-10).
+
+El Release `v1` (creado antes de descubrir el problema de CORS) queda publicado por
+compatibilidad, pero ya no es la fuente que usa el KMZ.
